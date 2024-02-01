@@ -1,5 +1,5 @@
 const express = require('express');
-const reading = require('./Fs/fsUtils');
+const { reading, randomToken } = require('./Fs/fsUtils');
 
 const app = express();
 app.use(express.json());
@@ -27,6 +27,11 @@ app.get('/talker/:id', async (req, res) => {
     res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
   }
   res.status(200).json(search);
+});
+
+app.post('/login', async (_req, res) => {
+  const token = randomToken();
+  res.status(200).json({ token });
 });
 
 app.listen(PORT, () => {
