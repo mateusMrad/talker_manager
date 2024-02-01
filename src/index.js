@@ -1,6 +1,5 @@
 const express = require('express');
 const reading = require('./Fs/fsUtils');
-const { path } = require('express/lib/application');
 
 const app = express();
 app.use(express.json());
