@@ -1,5 +1,7 @@
 const express = require('express');
 const { reading, randomToken } = require('./Fs/fsUtils');
+const validMail = require('./Middlewares/emailMid');
+const validPassword = require('./Middlewares/passwordMid');
 
 const app = express();
 app.use(express.json());
@@ -29,7 +31,7 @@ app.get('/talker/:id', async (req, res) => {
   res.status(200).json(search);
 });
 
-app.post('/login', async (_req, res) => {
+app.post('/login', validMail, validPassword, async (_req, res) => {
   const token = randomToken();
   res.status(200).json({ token });
 });
