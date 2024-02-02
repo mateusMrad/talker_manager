@@ -1,7 +1,10 @@
 const fs = require('fs/promises');
+const path = require('path');
 
-async function reading(path) {
-  const read = await fs.readFile(path);
+const PATH = path.resolve(__dirname, '../talker.json');
+
+async function reading() {
+  const read = await fs.readFile(PATH);
   const data = JSON.parse(read);
 
   return data;
@@ -17,7 +20,19 @@ function randomToken() {
   return token;
 }
 
+async function newAdd(talker) {
+  const { name, age, talk } = talker;
+  const { watchedAt, rate } = talk;
+  const getTalkers = await reading();
+  const id = getTalkers.length + 1;
+  const addTalker = { id, name, age, talk: { watchedAt, rate } };
+  const newTalkersList = JSON.stringify([...getTalkers, addTalker]);
+  await fs.writeFile(PATH, newTalkersList);
+  return addTalker;
+}
+
 module.exports = {
   reading,
   randomToken,
+  newAdd,
 };
