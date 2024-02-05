@@ -65,6 +65,18 @@ async function removeTalker(id) {
   }
 }
 
+async function searchTalker(parameter) {
+  const getTalkers = await reading();
+  if (!parameter) {
+    return getTalkers;
+  }
+  const filter = getTalkers.filter((talker) => talker.name.includes(parameter));
+  if (!filter) {
+    return [];
+  }
+  return filter;
+}
+
 module.exports = {
   reading,
   readingById,
@@ -72,4 +84,5 @@ module.exports = {
   newAdd,
   update,
   removeTalker,
+  searchTalker,
 };

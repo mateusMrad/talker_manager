@@ -1,5 +1,6 @@
 const express = require('express');
-const { reading, randomToken, newAdd, readingById, update, removeTalker } = require('./Fs/fsUtils');
+const { reading, randomToken,
+  newAdd, readingById, update, removeTalker, searchTalker } = require('./Fs/fsUtils');
 const validMail = require('./Middlewares/emailMid');
 const validPassword = require('./Middlewares/passwordMid');
 const validAge = require('./Middlewares/ageMid');
@@ -21,6 +22,12 @@ app.get('/', (_request, response) => {
 app.get('/talker', async (_req, res) => {
   const data = await reading();
   res.status(200).json(data);
+});
+
+app.get('/talker/search', validToken, async (req, res) => {
+  const { q } = req.query;
+  const search = await searchTalker(q);
+  return res.status(200).json(search);
 });
 
 app.get('/talker/:id', async (req, res) => {
