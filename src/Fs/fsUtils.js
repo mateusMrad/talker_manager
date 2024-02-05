@@ -52,10 +52,24 @@ async function update(talker, id) {
   }
 }
 
+async function removeTalker(id) {
+  const getTalkers = await reading();
+  const idTalkers = await readingById(id);
+  if (idTalkers === undefined) {
+    throw new Error('Pessoa palestrante não encontrada');
+  } else {
+    const filter = getTalkers.filter((palestrante) => palestrante.id !== id);
+    const newList = JSON.stringify([filter]);
+    await fs.writeFile(PATH, newList);
+    return newList;
+  }
+}
+
 module.exports = {
   reading,
   readingById,
   randomToken,
   newAdd,
   update,
+  removeTalker,
 };

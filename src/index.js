@@ -1,5 +1,5 @@
 const express = require('express');
-const { reading, randomToken, newAdd, readingById, update } = require('./Fs/fsUtils');
+const { reading, randomToken, newAdd, readingById, update, removeTalker } = require('./Fs/fsUtils');
 const validMail = require('./Middlewares/emailMid');
 const validPassword = require('./Middlewares/passwordMid');
 const validAge = require('./Middlewares/ageMid');
@@ -64,6 +64,17 @@ app.put('/talker/:id',
       res.status(404).json({ message: error.message });
     }
   });
+app.delete('/talker/:id', validToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const del = await removeTalker(Number(id));
+    if (del) {
+      return res.sendStatus(204);
+    }
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+});
 
 app.listen(PORT, () => {
   console.log('Online');
