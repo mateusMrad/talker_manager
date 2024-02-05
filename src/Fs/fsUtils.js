@@ -10,6 +10,12 @@ async function reading() {
   return data;
 }
 
+async function readingById(id) {
+  const read = await reading();
+  const find = read.find((talker) => talker.id === Number(id));
+  return find;
+}
+
 function randomToken() {
   let token = '';
   const elements = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -31,8 +37,25 @@ async function newAdd(talker) {
   return addTalker;
 }
 
+async function update(talker, id) {
+  const getTalkers = await reading();
+  const idTalkers = await readingById(id);
+  const { name, age, talk } = talker;
+  if (idTalkers === undefined) {
+    throw new Error('Pessoa palestrante não encontrada');
+  } else {
+    const filter = getTalkers.filter((palestrante) => palestrante.id !== id);
+    const newTalker = { id, name, age, talk };
+    const newList = JSON.stringify([...filter, newTalker]);
+    await fs.writeFile(PATH, newList);
+    return newTalker;
+  }
+}
+
 module.exports = {
   reading,
+  readingById,
   randomToken,
   newAdd,
+  update,
 };

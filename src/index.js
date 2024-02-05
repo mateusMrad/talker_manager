@@ -1,5 +1,5 @@
 const express = require('express');
-const { reading, randomToken, newAdd } = require('./Fs/fsUtils');
+const { reading, randomToken, newAdd, readingById, update } = require('./Fs/fsUtils');
 const validMail = require('./Middlewares/emailMid');
 const validPassword = require('./Middlewares/passwordMid');
 const validAge = require('./Middlewares/ageMid');
@@ -25,13 +25,12 @@ app.get('/talker', async (_req, res) => {
 
 app.get('/talker/:id', async (req, res) => {
   const { id } = req.params;
-  const read = await reading();
+  const find = await readingById(Number(id));
 
-  const search = read.find((talker) => talker.id === Number(id));
-  if (search === undefined) {
+  if (find === undefined) {
     res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
   }
-  res.status(200).json(search);
+  res.status(200).json(find);
 });
 
 app.post('/login', validMail, validPassword, async (_req, res) => {
@@ -48,6 +47,22 @@ app.post('/talker',
     const human = req.body;
     const newHuman = await newAdd(human);
     res.status(201).json(newHuman);
+  });
+
+app.put('/talker/:id',
+  validToken,
+  validName,
+  validAge,
+  validTalk,
+  validRate, async (req, res) => {
+    try {
+      const human = req.body;
+      const { id } = req.params;
+      const newList = await update(human, Number(id));
+      res.status(200).json(newList);
+    } catch (error) {
+      res.status(404).json({ message: error.message });
+    }
   });
 
 app.listen(PORT, () => {
